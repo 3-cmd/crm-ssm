@@ -8,10 +8,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="crm-ssm" />
+        <module name="crm-mybatis-generator" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="crm-ssm" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
