@@ -4,7 +4,7 @@
 %>
 <html>
 <head>
-	<base href="<%=basePath%>>">
+	<base href="<%=basePath%>">
 <meta charset="UTF-8">
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
@@ -37,9 +37,14 @@
 		
 		
 		window.open("main/index.html","workareaFrame");
+
+		//给退出登录按钮添加点击事件
+		$("#loginOutBtn").click(function (){
+			window.location.href="/settings/qx/user/loginOut";
+		})
 		
 	});
-	
+
 </script>
 
 </head>
@@ -129,7 +134,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='login.html';">确定</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="loginOutBtn" >确定</button>
 				</div>
 			</div>
 		</div>

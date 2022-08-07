@@ -1,10 +1,11 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 %>
 <html>
 <head>
-	<base href="<%=basePath%>>">
+	<base href="<%=basePath%>">
 <meta charset="UTF-8">
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
@@ -12,50 +13,58 @@
 
 	<script type="text/javascript">
 		$(function (){
-			$("#loginBtn").click(function (){
-				//收集参数
-				var loginAct=$.trim($("#loginAct").val());
-				var loginPwd=$.trim($("#loginPwd").val());
-				var isRemPwd=$("#isRemPwd").prop("checked");
-				//表单参数验证
-				if (loginAct==""){
-					alert("用户名不能为空");
-					return;
+			//给整个窗口添加回车时间
+			$(window).keydown(function (event){
+				//判断是否为回车键
+				if (event.keyCode==13){
+					$("#loginBtn").click()//当按键等于回车时,调用单击登陆按钮的方法
 				}
-				if (loginPwd==""){
-					alert("密码不能为空");
-					return;
-				}
-				//进行登陆等待时的提示
-				//$("#msg").text("正在登陆,请稍后....").css("color","green");
-				//发送ajax请求
-				$.ajax({
-					url:'/settings/qx/user/login',
-					data:{
-						loginAct:loginAct,
-						loginPwd:loginPwd,
-						isRemPwd:isRemPwd
-					},
-					type:'post',
-					dataType:'json',
-					success:function (data){
-						if (data.code==1){
-							//跳转业务主界面
-							window.location.href="/workbench/index.do";
-						}else {
-							$("#msg").html(data.msg).css("color","red");
-						}
-					},
-					beforeSend:function (){
-						//ajax发送请求前执行该函数
-						//该函数返回值执行完成后的返回值,会决定ajax是否需要发送请求
-						//如果返回true,则ajax发送请求
-						//如果该函数返回false,则放弃发送ajax请求
-						$("#msg").text("正在努力验证....").css("color","green");
-						return true;
-					}
-				})
 			})
+			//给登陆按钮添加单击事件
+					$("#loginBtn").click(function () {
+						//收集参数
+						var loginAct = $.trim($("#loginAct").val());
+						var loginPwd = $.trim($("#loginPwd").val());
+						var isRemPwd = $("#isRemPwd").prop("checked");
+						//表单参数验证
+						if (loginAct == "") {
+							alert("用户名不能为空");
+							return;
+						}
+						if (loginPwd == "") {
+							alert("密码不能为空");
+							return;
+						}
+						//进行登陆等待时的提示
+						//$("#msg").text("正在登陆,请稍后....").css("color","green");
+						//发送ajax请求
+						$.ajax({
+							url: '/settings/qx/user/login',
+							data: {
+								loginAct: loginAct,
+								loginPwd: loginPwd,
+								isRemPwd: isRemPwd
+							},
+							type: 'post',
+							dataType: 'json',
+							success: function (data) {
+								if (data.code == 1) {
+									//跳转业务主界面
+									window.location.href = "/workbench/index.do";
+								} else {
+									$("#msg").html(data.msg).css("color", "red");
+								}
+							},
+							beforeSend: function () {
+								//ajax发送请求前执行该函数
+								//该函数返回值执行完成后的返回值,会决定ajax是否需要发送请求
+								//如果返回true,则ajax发送请求
+								//如果该函数返回false,则放弃发送ajax请求
+								$("#msg").text("正在努力验证....").css("color", "green");
+								return true;
+							}
+						})
+					})
 		})
 	</script>
 
@@ -77,14 +86,20 @@
 			<form action="workbench/index.html" class="form-horizontal" role="form">
 				<div class="form-group form-group-lg">
 					<div style="width: 350px;">
-						<input class="form-control" id="loginAct" type="text" placeholder="用户名">
+						<input class="form-control" id="loginAct" type="text" value="${cookie.loginAct.value}" placeholder="用户名">
 					</div>
 					<div style="width: 350px; position: relative;top: 20px;">
-						<input class="form-control" id="loginPwd" type="password" placeholder="密码">
+						<input class="form-control" id="loginPwd" type="password" value="${cookie.loginPwd.value}" placeholder="密码">
 					</div>
 					<div class="checkbox"  style="position: relative;top: 30px; left: 10px;">
 						<label>
-							<input type="checkbox" id="isRemPwd"> 十天内免登录
+							<c:if test="${not empty cookie.loginAct and not empty cookie.loginPwd }">
+								<input type="checkbox" id="isRemPwd" checked>
+							</c:if>
+							<c:if test="${empty cookie.loginAct or  empty cookie.loginPwd }">
+								<input type="checkbox" id="isRemPwd" >
+							</c:if>
+							十天内免登录
 						</label>
 						&nbsp;&nbsp;
 						<%--显示提示信息--%>
