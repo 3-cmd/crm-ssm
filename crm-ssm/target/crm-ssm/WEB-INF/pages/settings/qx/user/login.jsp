@@ -26,6 +26,8 @@
 					alert("密码不能为空");
 					return;
 				}
+				//进行登陆等待时的提示
+				//$("#msg").text("正在登陆,请稍后....").css("color","green");
 				//发送ajax请求
 				$.ajax({
 					url:'/settings/qx/user/login',
@@ -43,6 +45,14 @@
 						}else {
 							$("#msg").html(data.msg).css("color","red");
 						}
+					},
+					beforeSend:function (){
+						//ajax发送请求前执行该函数
+						//该函数返回值执行完成后的返回值,会决定ajax是否需要发送请求
+						//如果返回true,则ajax发送请求
+						//如果该函数返回false,则放弃发送ajax请求
+						$("#msg").text("正在努力验证....").css("color","green");
+						return true;
 					}
 				})
 			})

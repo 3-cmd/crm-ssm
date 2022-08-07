@@ -2,6 +2,7 @@ package com.cs.crm.settings.web.controller;
 
 import cn.hutool.Hutool;
 import cn.hutool.core.date.DateUtil;
+import com.cs.crm.commons.contants.Contacts;
 import com.cs.crm.settings.domain.User;
 import com.cs.crm.settings.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class userController {
     }
     @ResponseBody
     @RequestMapping("/settings/qx/user/login")
-    public Result<User> login(String loginAct, String loginPwd, String isRemPwd, HttpServletRequest request) throws ParseException {
+    public Result<User> login(String loginAct, String loginPwd, String isRemPwd, HttpServletRequest request) throws ParseException, InterruptedException {
         Map<String ,String> userMap=new HashMap<>();
         userMap.put("loginAct",loginAct);
         userMap.put("loginPwd",loginPwd);
@@ -63,6 +64,8 @@ public class userController {
         if (!user.getAllowips().contains(request.getRemoteAddr())){
             return Result.error("ip受限,无法登录");
         }
+        //将用户存储到session中,因为发送ajax请求的页面与展示用户信息的页面不是同一个页面,返回的user数据无法使用
+        request.getSession().setAttribute(Contacts.SESSION_USER,user);
         return Result.success(user);
     }
 
