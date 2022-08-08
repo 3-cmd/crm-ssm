@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -106,4 +107,10 @@ public class userController {
         return "redirect:/";
     }
 
+    @RequestMapping("/workbench/activity/getAllUser")
+    public String getAllUser(HttpServletRequest request){
+        List<User> allUser = userService.getAllUser();
+        request.getSession().setAttribute("userList",allUser);
+        return  "workbench/activity/index";
+    }
 }

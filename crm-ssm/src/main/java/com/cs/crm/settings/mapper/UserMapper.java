@@ -2,6 +2,7 @@ package com.cs.crm.settings.mapper;
 
 import com.cs.crm.settings.domain.User;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserMapper {
@@ -54,4 +55,8 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     User selectUserByLoginActAndPwd(Map<String ,String> UserMap);
+    /**
+     * 查询所有用户
+     */
+    List<User> getAllUser();
 }
