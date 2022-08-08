@@ -52,6 +52,12 @@
     where loginAct=#{loginAct} and loginPwd=#{loginPwd}
   </select>
 
+  <select id="getAllUser" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List"/>
+    from tbl_user
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     <!--
       WARNING - @mbggenerated
