@@ -9,6 +9,11 @@
     <typeAliases>
         <package name="com.cs.crm.model"/>
     </typeAliases>
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+
+        </plugin>
+    </plugins>
     <mappers>
         <package name="com.cs.crm.mapper"/>
     </mappers>
