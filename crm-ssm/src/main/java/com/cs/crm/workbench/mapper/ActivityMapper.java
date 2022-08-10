@@ -54,12 +54,13 @@ public interface ActivityMapper {
      *
      * @mbggenerated Mon Aug 08 12:44:56 CST 2022
      */
-    int updateByPrimaryKey(Activity record);
+    int updateByPrimaryKey(Activity activity);
 
     /**
      * 根据条件进行分页查询
-     * @param activity
+     * @param activityPage
      * @return
      */
     List<Activity> selectByPage(@Param("activityPage") ActivityPage activityPage);
+    int deleteByActivityIds(@Param("ids") String[] ids);
 }

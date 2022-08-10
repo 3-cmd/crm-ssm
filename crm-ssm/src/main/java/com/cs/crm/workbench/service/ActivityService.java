@@ -10,4 +10,8 @@ import java.util.List;
 public interface ActivityService {
     int saveCreateActivity(Activity activity);
     PageInfo<Activity> queryActivityByPage(ActivityPage activityPage);
+    int deleteActivityByIds(String[] ids );
+    Activity getById(String id);
+
+    int saveEditActivity(Activity activity);
 }

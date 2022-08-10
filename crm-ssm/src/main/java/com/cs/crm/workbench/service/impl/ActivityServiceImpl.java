@@ -27,4 +27,20 @@ public class ActivityServiceImpl implements ActivityService {
         PageInfo<Activity> pageInfo=new PageInfo<>(activities);
         return pageInfo;
     }
+
+    @Override
+    public int deleteActivityByIds(String[] ids) {
+        return activityMapper.deleteByActivityIds(ids);
+    }
+
+    @Override
+    public Activity getById(String id) {
+        Activity activity = activityMapper.selectByPrimaryKey(id);
+        return activity;
+    }
+
+    @Override
+    public int saveEditActivity(Activity activity) {
+        return activityMapper.updateByPrimaryKey(activity);
+    }
 }
