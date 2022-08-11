@@ -63,4 +63,14 @@ public interface ActivityMapper {
      */
     List<Activity> selectByPage(@Param("activityPage") ActivityPage activityPage);
     int deleteByActivityIds(@Param("ids") String[] ids);
+
+    /**
+     * 批量导出功能,导出全部的活动信息
+     * @return
+     */
+    List<Activity> selectAllActivity();
+    /**
+     * 选择导出功能
+     */
+    List<Activity> selectActivityByIds(@Param("ids") String[] ids);
 }

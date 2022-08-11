@@ -82,12 +82,6 @@
     where id = #{id,jdbcType=CHAR}
   </delete>
 
-  <delete id="deleteByActivityIds" parameterType="java.lang.String">
-    delete from tbl_marketing_activities where id in
-    <foreach collection="ids" item="id" open="(" close=")" separator=",">
-      #{id}
-    </foreach>
-  </delete>
 
   <insert id="insert" parameterType="com.cs.crm.workbench.domain.Activity" >
     <!--
@@ -272,4 +266,37 @@
       editTime = #{edittime,jdbcType=CHAR}
     where id = #{id,jdbcType=CHAR}
   </update>
+  <select id="selectAllActivity" resultMap="BaseResultMap">
+    select a.id,u1.name owner,a.name,a.startDate,a.endDate,a.budgetcost,a.description,
+           a.createTime,u2.name createby,a.editTime,u3.name editby
+    from tbl_marketing_activities a
+           join tbl_user u1 on a.owner=u1.id
+           join tbl_user u2 on a.createBy=u2.id
+           left join tbl_user u3 on a.editBy=u3.id
+    order by a.createTime desc
+  </select>
+
+  <delete id="deleteByActivityIds" parameterType="java.lang.String">
+    delete from tbl_marketing_activities where id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+
+<!--  此处采用子查询,from为根据id查出来的一个表,并且为这个表起别名-->
+  <select id="selectActivityByIds" resultMap="BaseResultMap" parameterType="string">
+    select  a.id,u1.name owner,a.name,a.startDate,a.endDate,a.budgetcost,a.description,
+    a.createTime,u2.name createby,a.editTime,u3.name editby
+    from
+        (select <include refid="Base_Column_List"></include>
+        from tbl_marketing_activities a  where a.id in
+            <foreach collection="ids" item="id" open="(" close=")" separator=",">
+             #{id}
+            </foreach>
+        ) a
+           join tbl_user u1 on a.owner=u1.id
+           join tbl_user u2 on a.createBy=u2.id
+           left join tbl_user u3 on a.editBy=u3.id
+    order by a.createTime desc
+  </select>
 </mapper>

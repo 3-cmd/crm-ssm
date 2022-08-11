@@ -266,6 +266,26 @@
 					}
 				})
 			})
+		//给批量导出按钮添加单击时间
+		$("#exportActivityAllBtn").click(function (){
+			window.location.href="workbench/activity/exportAllActivity";
+		})
+		//给按id导出文件添加单击事件
+		$("#exportActivityXzBtn").click(function (){
+			//收集参数,将选择的ids传递过去
+			var checkIds=$("#tBody input[type='checkbox']:checked");
+			if (checkIds.size()==0){
+				alert("请选择要导出的市场活动");
+				return;
+			}
+			var url='workbench/activity/exportActivityByIds?';
+			$.each(checkIds,function (){
+				url+="ids="+this.value+"&";
+			})
+			alert(url)
+			window.location.href=url;
+
+		})
 		});
 
 	//封装函数,分页条件查询的函数
