@@ -47,4 +47,5 @@ public interface ActivityService {
      * 根据选择的id导出excel文件
      */
     List<Activity> queryActivityByIds(String[] ids);
+    int saveCreateByList(List<Activity> activityList);
 }

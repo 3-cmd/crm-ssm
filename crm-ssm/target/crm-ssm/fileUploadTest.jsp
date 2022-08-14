@@ -7,20 +7,15 @@
 <html>
 <head>
     <base href="<%=basePath%>">
-    <title>文件下载演示</title>
+    <title>文件上传演示</title>
     <%--    引入jquery--%>
     <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
-    <script type="text/javascript">
-        $(function (){
-            //给下载按钮添加单击事件
-            $("#fileDownLoadBtn").click(function (){
-                //发送文件下载请求
-                window.location.href="workbench/activity/fileDownload";
-            })
-        })
-    </script>
 </head>
 <body>
-    <input type="button" value="下载" id="fileDownLoadBtn">
+    <form action="workbench/activity/fileUpLoadTest" method="post" id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="myFile"><br>
+        <input type="text" name="userName"><br>
+        <input type="submit" value="提交文件">
+    </form>
 </body>
 </html>

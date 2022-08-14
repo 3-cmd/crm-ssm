@@ -1,7 +1,7 @@
 import cn.hutool.core.lang.UUID;
 import org.junit.Test;
 
-public class Test1 {
+public class CreateExcelTest {
     @Test
     public void test1(){
         String uuid = UUID.randomUUID().toString().replace("-","");

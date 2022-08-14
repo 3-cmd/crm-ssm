@@ -282,9 +282,46 @@
 			$.each(checkIds,function (){
 				url+="ids="+this.value+"&";
 			})
-			alert(url)
 			window.location.href=url;
 
+		})
+		//给倒入按钮添加单击事件
+		$("#importActivityBtn").click(function (){
+			//收集参数
+			var activityFileName=$("#activityFile").val();
+			//只能获取到文件名,根据文件名获取后缀进行判断
+			var suffix=activityFileName.substr(activityFileName.lastIndexOf('.')+1).toLowerCase();
+			if (suffix!="xls"){
+				alert("只支持xls文件类型")
+				return;
+			}
+			var file=$("#activityFile")[0].files[0];
+			if (file.size>5*1024*1024){
+				alert("文件大小不能超过5MB");
+				return;
+			}
+			//使用FormData来发送文件信息
+			var formData=new FormData;
+			formData.append("activityFile",file)
+			//发送请求
+			$.ajax({
+				url:'workbench/activity/importActivity',
+				data:formData,
+				processData: false,//是否把参数同意装换为字符串
+				contentType:false,//ajax提交参数之前,是否将url同意编码
+				type:'post',
+				dataType:'json',
+				success:function (data){
+					if (data.code==1){
+						alert(data.msg);
+						$("#importActivityModal").modal("hide");
+						queryActivityByPage(1,$("#pageDiv").bs_pagination('getOption','rowsPerPage'));
+					}else{
+						alert(data.msg);
+						$("#importActivityModal").modal("show");
+					}
+				}
+			})
 		})
 		});
 

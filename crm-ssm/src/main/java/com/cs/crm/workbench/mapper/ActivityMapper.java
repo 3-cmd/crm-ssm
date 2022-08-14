@@ -73,4 +73,5 @@ public interface ActivityMapper {
      * 选择导出功能
      */
     List<Activity> selectActivityByIds(@Param("ids") String[] ids);
+    int saveActivitiesByList(List<Activity> activityList);
 }

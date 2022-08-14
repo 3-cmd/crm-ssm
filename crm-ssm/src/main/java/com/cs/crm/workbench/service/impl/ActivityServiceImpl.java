@@ -54,4 +54,9 @@ public class ActivityServiceImpl implements ActivityService {
     public List<Activity> queryActivityByIds(String[] ids) {
         return activityMapper.selectActivityByIds(ids);
     }
+
+    @Override
+    public int saveCreateByList(List<Activity> activityList) {
+        return activityMapper.saveActivitiesByList(activityList);
+    }
 }

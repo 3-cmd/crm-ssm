@@ -3,6 +3,7 @@ package com.cs.crm.workbench.web.controller;
 import com.cs.crm.commons.ActivityPage;
 import com.cs.crm.commons.contants.Contacts;
 import com.cs.crm.commons.domain.Result;
+import com.cs.crm.commons.utils.ParseExcelUtils;
 import com.cs.crm.commons.utils.UUIDUtils;
 import com.cs.crm.settings.domain.User;
 import com.cs.crm.workbench.domain.Activity;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -250,6 +253,58 @@ public class ActivityController {
         os.flush();
     }
 
+    @RequestMapping("workbench/activity/importActivity")
+    @ResponseBody
+    public Result importActivity(MultipartFile activityFile,HttpServletRequest request){
+        try {
+            User user= (User) request.getSession().getAttribute(Contacts.SESSION_USER);
+            //获取前段传递过来的文件,获取这个文件的输入流
+            InputStream is = activityFile.getInputStream();
+            //解析excel文件,获取文件中的数据
+            HSSFWorkbook wb=new HSSFWorkbook(is);
+            HSSFSheet sheet = wb.getSheetAt(0);
+            HSSFRow row=null;
+            HSSFCell cell=null;
+            List<Activity> list=new ArrayList<>();
+            //数据只能从excel文件中一行一行的取出来,而每一行代表着一个用户的全部信息
+            for (int i = 1; i <=sheet.getLastRowNum(); i++) {
+                row=sheet.getRow(i);
+                //一行代表一个用户,为该用户设置无法手动录入excel文件的字段
+                Activity activity=new Activity();//每一行创建一个对象,将这些对象加入list集合中去,批量插入即可
+                activity.setId(UUIDUtils.getUUID());
+                //此处的所有者我们规定,谁导入则谁是该活动的所有者
+                activity.setOwner(user.getId());
+                activity.setCreateby(user.getId());
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                activity.setCreatetime(sdf.format(new Date()));
+                //获取excel表中存在的每一个字段的值,此时的每一个字段的值是有顺序的,如果不按规定,则无法倒入成功
+                for (int j = 0; j < row.getLastCellNum(); j++) {
+                    cell=row.getCell(j);
+                    if (cell.equals("") || cell==null){
+                        break;
+                    }
+                    if (j==0){
+                        activity.setName(ParseExcelUtils.getCellValueForStr(cell));
+                    }else if (j==1){
+                        activity.setStartdate(ParseExcelUtils.getCellValueForStr(cell));
+                    }else if (j==2){
+                        activity.setEnddate(ParseExcelUtils.getCellValueForStr(cell));
+                    }else if (j==3){
+                        activity.setBudgetcost(Double.parseDouble(ParseExcelUtils.getCellValueForStr(cell)));
+                    }else if (j==4){
+                        activity.setDescription(ParseExcelUtils.getCellValueForStr(cell));
+                    }
+                }
+                list.add(activity);
+            }
+            int ret = activityService.saveCreateByList(list);
+            return Result.success("导入"+ret+"条数据");
+        }catch (IOException e){
+            e.printStackTrace();
+            return Result.error("系统繁忙,请稍后重试...");
+        }
+
+    }
     /**
      * 测试导出文件的controller
      * @param response
@@ -275,5 +330,24 @@ public class ActivityController {
         is.close();
         //这里的outputstrean不是我们创建的,交给服务器来关闭
         outputStream.flush();
+    }
+
+    /**
+     * 文件上传功能测试
+     * 配置文件上传解析器
+     * @param userName
+     * @param myFile
+     * @return
+     */
+    @RequestMapping("workbench/activity/fileUpLoadTest")
+    @ResponseBody
+    public Result fileUpLoadTest(String userName, MultipartFile myFile) throws Exception{
+        //把文本数据打印到控制台
+        System.out.println("userName:"+userName );
+        InputStream is = myFile.getInputStream();
+        System.out.println(is);
+        //把文件在服务指定的目录中生成一个同样的文件
+        myFile.transferTo(new File("D:\\",myFile.getOriginalFilename()));
+        return Result.success("成功");
     }
 }
